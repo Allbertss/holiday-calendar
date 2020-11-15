@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Holiday Calendar{% endblock %}
+
+{% block body %}
+    {% if results %}
+        <p>Holidays: <strong>{{ results|length }}</strong></p>
+        <p>Today {{ "now"|date("d/m/y") }} is: <strong>{{ todayStatus }}</strong></p>
+        <p>Maximum free (free day + holiday) days in a row: <strong>{{ maxDaysInARow }}</strong><i>(days)</i></p>
+
+        {% set previousMonth = 0 %}
+        {% for result in results %}
+            {% set day = result.date.day %}
+            {% set month = result.date.month %}
+
+            {% if result.date.day < 10 %}
+                {% set day = "0" ~ result.date.day %}
+            {% endif %}
+
+            {% if result.date.month < 10 %}
+                {% set month = "0" ~ result.date.month %}
+            {% endif %}
+
+            {% if previousMonth != result.date.month %}
+                <hr>
+                <p><strong>{{ result.date.year }}-{{ month }}</strong></p>
+                {% set previousMonth = result.date.month %}
+            {% endif %}
+
+            <li class="ml-5"><span style="color: red">{{ day }}</span> - {{ attribute(result.name, 0).text }}</li>
+        {% endfor %}
+    {% else %}
+        <p>There are no holidays in selected period.</p>
+    {% endif %}
+
+{% endblock %}
